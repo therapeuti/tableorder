@@ -2,9 +2,7 @@ version: '3.8'
 
 services:
   web:
-    build: 
-      context: .
-      dockerfile: deployment/Dockerfile
+    build: .
     ports:
       - "80:8000"
     environment:
@@ -14,5 +12,5 @@ services:
     volumes:
       - ./db.sqlite3:/app/db.sqlite3
       - ./media:/app/media
-      - ./static:/app/staticfiles
+      - ./staticfiles:/app/staticfiles
     restart: unless-stopped

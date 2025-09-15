@@ -56,7 +56,7 @@ python manage.py runserver
 
 ### 1. 환경변수 설정
 ```bash
-cp .env.example .env
+cp config/.env.example .env
 # .env 파일을 편집하여 필요한 값들을 설정
 ```
 
@@ -65,11 +65,9 @@ cp .env.example .env
 docker-compose up -d --build
 ```
 
-### 3. 초기 설정
+### 3. 관리자 계정 생성
 ```bash
-docker-compose exec web python manage.py migrate
 docker-compose exec web python manage.py createsuperuser
-docker-compose exec web python manage.py collectstatic --noinput
 ```
 
 ## 프로젝트 구조
@@ -77,17 +75,20 @@ docker-compose exec web python manage.py collectstatic --noinput
 ```
 tableorder/
 ├── .github/workflows/     # GitHub Actions CI/CD
-├── restaurant_system/     # Django 메인 프로젝트
+├── config/               # 환경 설정 파일들
+├── deployment/           # Docker 및 배포 설정
+├── scripts/              # 배포 스크립트
+├── restaurant_system/    # Django 메인 프로젝트
 ├── tables/               # 테이블 관리 앱
-├── orders/               # 주문 관리 앱
+├── orders/               # 주문 관리 앱  
 ├── menus/                # 메뉴 관리 앱
 ├── reports/              # 리포트 앱
 ├── templates/            # HTML 템플릿
 ├── static/               # 정적 파일
-├── scripts/              # 배포 스크립트
-├── docker-compose.yml    # Docker Compose 설정
-├── Dockerfile           # Docker 이미지 설정
-└── requirements.txt     # Python 의존성
+├── media/                # 업로드된 미디어 파일
+├── manage.py            # Django 관리 명령어
+├── requirements.txt     # Python 의존성
+└── README.md           # 프로젝트 문서
 ```
 
 ## API 문서

@@ -63,6 +63,9 @@ development_checklist.md
 technical_specification.md
 restaurant_order_system_requirements.md
 
+# Environment files
+.env
+
 # Backup files
 *.bak
 *.backup
