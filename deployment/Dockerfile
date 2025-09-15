@@ -6,10 +6,14 @@ WORKDIR /app
 
 # Python 의존성 복사 및 설치
 COPY requirements.txt .
-RUN pip install --no-cache-dir Django==5.2.6 Pillow==11.3.0 qrcode[pil]==8.2 django-cors-headers==4.7.0 gunicorn
+RUN pip install --no-cache-dir Django==5.2.6 Pillow==11.3.0 qrcode[pil]==8.2 django-cors-headers==4.7.0 gunicorn django-debug-toolbar
 
 # 애플리케이션 코드 복사
 COPY . .
+
+# 환경변수 설정 (프로덕션 모드)
+ENV DJANGO_SETTINGS_MODULE=restaurant_system.settings
+ENV DEBUG=False
 
 # SQLite 데이터베이스 파일이 없으면 초기 마이그레이션 실행
 RUN python manage.py migrate --run-syncdb
