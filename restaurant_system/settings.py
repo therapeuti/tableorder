@@ -67,7 +67,7 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
+            'NAME': BASE_DIR / 'data' / 'db' / 'db.sqlite3',
         }
     }
 
@@ -100,7 +100,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Media files
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = BASE_DIR / 'data' / 'media'
 
 # CORS settings
 CORS_ALLOW_ALL_ORIGINS = True

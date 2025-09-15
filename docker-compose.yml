@@ -12,7 +12,5 @@ services:
       - DEBUG=${DEBUG:-False}
       - ALLOWED_HOSTS=${ALLOWED_HOSTS:-localhost,127.0.0.1}
     volumes:
-      - ./db.sqlite3:/app/db.sqlite3
-      - ./media:/app/media
-      - ./static:/app/staticfiles
+      - ./data:/app/data
     restart: unless-stopped
