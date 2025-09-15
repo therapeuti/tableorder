@@ -28,7 +28,7 @@ jobs:
           git pull origin main || echo "git pull 실패"
           echo "=== 환경 설정 ==="
           cp config/.env.simple .env || echo ".env 설정 실패"
-          echo "ALLOWED_HOSTS=localhost,127.0.0.1,${{ secrets.EC2_HOST }}" >> .env
+          sed -i "s/ALLOWED_HOSTS=.*/ALLOWED_HOSTS=localhost,127.0.0.1,${{ secrets.EC2_HOST }}/" .env
           echo "=== Docker 작업 ==="
           docker-compose down || echo "컨테이너 중단 실패"
           docker-compose up -d --build || echo "Docker 빌드 실패"
