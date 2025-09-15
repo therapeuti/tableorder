@@ -15,14 +15,18 @@ COPY . .
 ENV DJANGO_SETTINGS_MODULE=restaurant_system.settings
 ENV DEBUG=False
 
-# SQLite 데이터베이스 파일이 없으면 초기 마이그레이션 실행
-RUN python manage.py migrate --run-syncdb
-
-# 정적 파일 수집
+# 정적 파일 수집 (마이그레이션은 런타임에서)
 RUN python manage.py collectstatic --noinput
+
+# 엔트리포인트 스크립트 복사 및 권한 설정
+COPY scripts/docker-entrypoint.sh /app/docker-entrypoint.sh
+RUN chmod +x /app/docker-entrypoint.sh
 
 # 포트 노출
 EXPOSE 8000
+
+# 엔트리포인트 설정
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
 
 # 애플리케이션 실행
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "2", "restaurant_system.wsgi:application"]
