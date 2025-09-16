@@ -27,8 +27,8 @@ urlpatterns = [
     path('reports/', include('reports.urls')),
 ]
 
-# 미디어 파일 서빙 (소규모 서비스용)
+# 미디어 파일 서빙
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-# 정적 파일 서빙 (소규모 서비스용 - 운영환경에서도 Django가 서빙)
+# 정적 파일 서빙 (소규모 서비스용 - Django가 직접 서빙)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

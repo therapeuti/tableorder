@@ -95,8 +95,13 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
-STATICFILES_DIRS = []
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# 개발 모드에서만 STATICFILES_DIRS 사용
+if DEBUG:
+    STATICFILES_DIRS = [BASE_DIR / 'static'] if (BASE_DIR / 'static').exists() else []
+else:
+    STATICFILES_DIRS = []
 
 # Static files finders - Django admin 파일들을 찾기 위해 명시적 설정
 STATICFILES_FINDERS = [
