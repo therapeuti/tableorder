@@ -48,6 +48,7 @@ class Discount(models.Model):
 class Order(models.Model):
     STATUS_CHOICES = [
         ('pending', '주문 대기'),
+        ('ordered', '주문 완료'),
         ('confirmed', '주문 확인'),
         ('cooking', '조리 중'),
         ('ready', '조리 완료'),

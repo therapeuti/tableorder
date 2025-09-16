@@ -148,7 +148,7 @@ function updateTableStatus() {
 
                 if (tableCard) {
                     // 기존 상태 클래스만 안전하게 제거
-                    tableCard.classList.remove('table-empty', 'table-ordered', 'table-cooking', 'table-paid');
+                    tableCard.classList.remove('table-empty', 'table-ordered', 'table-cooking', 'table-ready', 'table-paid');
                     // 새 상태 클래스 추가
                     tableCard.classList.add(`table-${table.status}`);
 
@@ -174,7 +174,8 @@ function updateTableStatus() {
                     const statusConfig = {
                         'empty': { text: '빈 테이블', class: 'bg-secondary' },
                         'ordered': { text: '주문 완료', class: 'bg-warning' },
-                        'cooking': { text: '조리 완료', class: 'bg-danger' },
+                        'cooking': { text: '조리 중', class: 'bg-primary' },
+                        'ready': { text: '조리 완료', class: 'bg-danger' },
                         'paid': { text: '결제 완료', class: 'bg-info' }
                     };
 
@@ -522,7 +523,7 @@ function updateSingleTable(tableId, newStatus) {
     
     if (tableCard) {
         // 기존 상태 클래스만 안전하게 제거
-        tableCard.classList.remove('table-empty', 'table-ordered', 'table-cooking', 'table-paid');
+        tableCard.classList.remove('table-empty', 'table-ordered', 'table-cooking', 'table-ready', 'table-paid');
         // 새 상태 클래스 추가
         tableCard.classList.add(`table-${newStatus}`);
     }
@@ -531,8 +532,9 @@ function updateSingleTable(tableId, newStatus) {
         const statusConfig = {
             'empty': { text: '빈 테이블', class: 'bg-secondary' },
             'ordered': { text: '주문 완료', class: 'bg-warning' },
-            'cooking': { text: '조리 완룼', class: 'bg-danger' },
-            'paid': { text: '결제 완룼', class: 'bg-info' }
+            'cooking': { text: '조리 중', class: 'bg-primary' },
+            'ready': { text: '조리 완료', class: 'bg-danger' },
+            'paid': { text: '결제 완료', class: 'bg-info' }
         };
         
         const config = statusConfig[newStatus] || { text: newStatus, class: 'bg-primary' };
@@ -574,11 +576,12 @@ function updateStatus(tableId, newStatus) {
 }
 
 function cycleTableStatus(tableId, currentStatus) {
-    // 상태 순환: empty -> ordered -> cooking -> paid -> empty
+    // 상태 순환: empty -> ordered -> cooking -> ready -> paid -> empty
     const statusCycle = {
         'empty': 'ordered',
-        'ordered': 'cooking', 
-        'cooking': 'paid',
+        'ordered': 'cooking',
+        'cooking': 'ready',
+        'ready': 'paid',
         'paid': 'empty'
     };
     

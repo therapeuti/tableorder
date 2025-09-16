@@ -156,14 +156,9 @@ def submit_order(request, table_number):
         # 주문 총액 업데이트
         order.total_amount = total_amount
 
-        # 조리가 필요한 메뉴가 있는지 확인하여 상태 결정
-        has_cooking_items = any(item.menu.requires_cooking for item in order.items.all())
-        if has_cooking_items:
-            order.status = 'cooking'
-            table.status = 'cooking'
-        else:
-            order.status = 'ready'
-            table.status = 'ready'
+        # 주문 완료 상태로 설정 (수동으로만 조리 상태 변경)
+        order.status = 'ordered'
+        table.status = 'ordered'
 
         order.save()
         table.save()

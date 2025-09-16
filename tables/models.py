@@ -8,7 +8,8 @@ class Table(models.Model):
     STATUS_CHOICES = [
         ('empty', '빈 테이블'),
         ('ordered', '주문 완료'),
-        ('cooking', '조리 완료'),
+        ('cooking', '조리 중'),
+        ('ready', '조리 완료'),
         ('paid', '결제 완료'),
     ]
     
