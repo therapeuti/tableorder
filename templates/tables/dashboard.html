@@ -147,8 +147,8 @@ function updateTableStatus() {
                 const statusBadge = document.querySelector(`.status-badge[data-table-id="${table.id}"]`);
 
                 if (tableCard) {
-                    // 기존 상태 클래스 제거
-                    tableCard.className = tableCard.className.replace(/table-(empty|ordered|cooking|paid)/g, '');
+                    // 기존 상태 클래스만 안전하게 제거
+                    tableCard.classList.remove('table-empty', 'table-ordered', 'table-cooking', 'table-paid');
                     // 새 상태 클래스 추가
                     tableCard.classList.add(`table-${table.status}`);
 
@@ -180,8 +180,8 @@ function updateTableStatus() {
 
                     const config = statusConfig[table.status] || { text: table.status, class: 'bg-primary' };
 
-                    // 기존 배경 클래스 제거
-                    statusBadge.className = statusBadge.className.replace(/bg-(primary|secondary|warning|danger|info|success)/g, '');
+                    // 기존 배경 클래스만 안전하게 제거
+                    statusBadge.classList.remove('bg-primary', 'bg-secondary', 'bg-warning', 'bg-danger', 'bg-info', 'bg-success');
 
                     // 새 텍스트와 색상 적용
                     statusBadge.textContent = config.text;
@@ -511,8 +511,8 @@ function updateSingleTable(tableId, newStatus) {
     const statusBadge = document.querySelector(`.status-badge[data-table-id="${tableId}"]`);
     
     if (tableCard) {
-        // 기존 상태 클래스 제거
-        tableCard.className = tableCard.className.replace(/table-(empty|ordered|cooking|paid)/g, '');
+        // 기존 상태 클래스만 안전하게 제거
+        tableCard.classList.remove('table-empty', 'table-ordered', 'table-cooking', 'table-paid');
         // 새 상태 클래스 추가
         tableCard.classList.add(`table-${newStatus}`);
     }
@@ -527,9 +527,9 @@ function updateSingleTable(tableId, newStatus) {
         
         const config = statusConfig[newStatus] || { text: newStatus, class: 'bg-primary' };
         
-        // 기존 배경 클래스 제거
-        statusBadge.className = statusBadge.className.replace(/bg-(primary|secondary|warning|danger|info|success)/g, '');
-        
+        // 기존 배경 클래스만 안전하게 제거
+        statusBadge.classList.remove('bg-primary', 'bg-secondary', 'bg-warning', 'bg-danger', 'bg-info', 'bg-success');
+
         // 새 텍스트와 색상 적용
         statusBadge.textContent = config.text;
         statusBadge.classList.add(config.class);
