@@ -171,19 +171,26 @@ function scrollToBottom() {
 
 function updateKitchenStatus() {
     const currentFilter = new URLSearchParams(window.location.search).get('status') || 'all';
-    
+
     fetch('api/kitchen-status/')
         .then(response => response.json())
         .then(data => {
+            console.log('Kitchen status data:', data);
+
             // 카운트 업데이트
             updateCounts(data.cooking_count, data.ready_count, data.total_count);
-            
-            // 새 주문 감지
+
+            // 새 주문 감지 시 페이지 전체 새로고침
             if (data.total_count > previousOrderCount) {
+                console.log('New orders detected, refreshing page...');
                 showNewOrderAlert();
-                scrollToBottom();
+                // 3초 후 페이지 새로고침
+                setTimeout(() => {
+                    window.location.reload();
+                }, 3000);
+                return; // 새로고침 예정이므로 더 이상 진행하지 않음
             }
-            
+
             previousOrderCount = data.total_count;
             lastUpdateTime = Date.now();
         })
