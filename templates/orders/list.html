@@ -33,6 +33,12 @@
     margin: 10px 0;
     animation: pulse 2s infinite;
     display: none;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    font-weight: bold;
+}
+
+.new-order-alert.show {
+    display: block;
 }
 
 @keyframes pulse {
@@ -217,18 +223,25 @@ let lastUpdateTime = Date.now();
 // 페이지 로드 시 초기화
 document.addEventListener('DOMContentLoaded', function() {
     previousOrderCount = document.querySelectorAll('.order-card').length;
-    scrollToBottom();
-    
+
+    // 페이지 로드 후 항상 최신 주문이 보이도록 하단으로 스크롤
+    setTimeout(() => {
+        scrollToBottom();
+    }, 500);
+
     // 3초마다 실시간 업데이트
     setInterval(updateKitchenStatus, 3000);
 });
 
 function scrollToBottom() {
     setTimeout(function() {
-        window.scrollTo({
-            top: document.body.scrollHeight,
-            behavior: 'smooth'
-        });
+        const ordersContent = document.querySelector('.orders-content');
+        if (ordersContent) {
+            ordersContent.scrollTo({
+                top: ordersContent.scrollHeight,
+                behavior: 'smooth'
+            });
+        }
     }, 100);
 }
 
@@ -247,10 +260,11 @@ function updateKitchenStatus() {
             if (data.total_count > previousOrderCount) {
                 console.log('New orders detected, showing alert...');
                 showNewOrderAlert();
-                // 10초 후 페이지 새로고침 (사용자가 알림을 볼 시간 제공)
+                // 8초 후 페이지 새로고침 (사용자가 알림을 볼 시간 제공)
                 setTimeout(() => {
+                    console.log('페이지 새로고침 중...');
                     window.location.reload();
-                }, 10000);
+                }, 8000);
                 return; // 새로고침 예정이므로 더 이상 진행하지 않음
             }
 
@@ -291,19 +305,23 @@ function updateCounts(cooking, ready, total) {
 function hideNewOrderAlert() {
     const alertElement = document.getElementById('newOrderAlert');
     if (alertElement) {
-        alertElement.style.display = 'none';
+        alertElement.classList.remove('show');
+        console.log('새 주문 알림 숨김');
     }
 }
 
 function showNewOrderAlert() {
     const alertElement = document.getElementById('newOrderAlert');
     if (alertElement) {
-        alertElement.style.display = 'block';
+        alertElement.classList.add('show');
+        console.log('새 주문 알림 표시됨');
 
-        // 5초 후 자동 숨김
+        // 10초 후 자동 숨김
         setTimeout(() => {
             hideNewOrderAlert();
-        }, 5000);
+        }, 10000);
+    } else {
+        console.error('새 주문 알림 요소를 찾을 수 없습니다');
     }
 }
 </script>
