@@ -356,29 +356,60 @@ function updateKitchenStatus() {
 }
 
 function updateCounts(cooking, ready, total) {
-    // 배지 업데이트
-    const badges = document.querySelectorAll('.badge');
-    badges.forEach(badge => {
-        if (badge.textContent.includes('전체')) {
-            badge.textContent = `전체 ${total}`;
-        } else if (badge.textContent.includes('조리중')) {
-            badge.textContent = `조리중 ${cooking}`;
-        } else if (badge.textContent.includes('완료') && !badge.textContent.includes('오늘')) {
-            badge.textContent = `완료 ${ready}`;
-        }
-    });
-    
-    // 필터 버튼 업데이트
-    const filterButtons = document.querySelectorAll('.btn-group a');
-    filterButtons.forEach(btn => {
-        if (btn.textContent.includes('전체')) {
-            btn.innerHTML = `<i class="fas fa-list"></i> 전체 (${total})`;
-        } else if (btn.textContent.includes('조리중')) {
-            btn.innerHTML = `<i class="fas fa-fire"></i> 조리중 (${cooking})`;
-        } else if (btn.textContent.includes('완료') && !btn.textContent.includes('오늘')) {
-            btn.innerHTML = `<i class="fas fa-check"></i> 완료 (${ready})`;
-        }
-    });
+    // ordered_count와 cooking_count가 별도로 전달되면 합쳐서 사용
+    fetch('/orders/api/kitchen-status/')
+        .then(response => response.json())
+        .then(data => {
+            const combinedCookingCount = (data.ordered_count || 0) + (data.cooking_count || 0);
+
+            // 배지 업데이트
+            const badges = document.querySelectorAll('.badge');
+            badges.forEach(badge => {
+                if (badge.textContent.includes('전체')) {
+                    badge.textContent = `전체 ${data.total_count}`;
+                } else if (badge.textContent.includes('조리중')) {
+                    badge.textContent = `조리중 ${combinedCookingCount}`;
+                } else if (badge.textContent.includes('완료') && !badge.textContent.includes('오늘')) {
+                    badge.textContent = `완료 ${data.ready_count}`;
+                }
+            });
+
+            // 필터 버튼 업데이트
+            const filterButtons = document.querySelectorAll('.btn-group a');
+            filterButtons.forEach(btn => {
+                if (btn.textContent.includes('전체')) {
+                    btn.innerHTML = `<i class="fas fa-list"></i> 전체 (${data.total_count})`;
+                } else if (btn.textContent.includes('조리중')) {
+                    btn.innerHTML = `<i class="fas fa-fire"></i> 조리중 (${combinedCookingCount})`;
+                } else if (btn.textContent.includes('완료') && !btn.textContent.includes('오늘')) {
+                    btn.innerHTML = `<i class="fas fa-check"></i> 완료 (${data.ready_count})`;
+                }
+            });
+        })
+        .catch(error => {
+            // 백업으로 전달받은 값 사용
+            const badges = document.querySelectorAll('.badge');
+            badges.forEach(badge => {
+                if (badge.textContent.includes('전체')) {
+                    badge.textContent = `전체 ${total}`;
+                } else if (badge.textContent.includes('조리중')) {
+                    badge.textContent = `조리중 ${cooking}`;
+                } else if (badge.textContent.includes('완료') && !badge.textContent.includes('오늘')) {
+                    badge.textContent = `완료 ${ready}`;
+                }
+            });
+
+            const filterButtons = document.querySelectorAll('.btn-group a');
+            filterButtons.forEach(btn => {
+                if (btn.textContent.includes('전체')) {
+                    btn.innerHTML = `<i class="fas fa-list"></i> 전체 (${total})`;
+                } else if (btn.textContent.includes('조리중')) {
+                    btn.innerHTML = `<i class="fas fa-fire"></i> 조리중 (${cooking})`;
+                } else if (btn.textContent.includes('완료') && !btn.textContent.includes('오늘')) {
+                    btn.innerHTML = `<i class="fas fa-check"></i> 완료 (${ready})`;
+                }
+            });
+        });
 }
 
 function findNewOrders(previousOrders, currentOrders) {

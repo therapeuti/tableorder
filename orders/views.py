@@ -12,31 +12,27 @@ from menus.models import Menu
 def order_list(request):
     from django.utils import timezone
     
-    # 주문 대기, 주문 확인 단계를 자동으로 조리중으로 변경
-    Order.objects.filter(status__in=['pending', 'confirmed']).update(status='cooking')
-    
     status_filter = request.GET.get('status', 'all')
     today = timezone.now().date()
-    
+
     if status_filter == 'cooking':
-        orders = Order.objects.filter(status='cooking')
+        # 조리중 탭: 주문완료 + 조리중 상태 모두 표시
+        orders = Order.objects.filter(status__in=['ordered', 'cooking'])
     elif status_filter == 'ready':
         orders = Order.objects.filter(status='ready')
     elif status_filter == 'completed':
-        # 모든 주문을 paid로 변경 (테스트용)
-        Order.objects.filter(status__in=['cooking', 'ready']).update(status='paid')
         orders = Order.objects.filter(status='paid', created_at__date=today)
     else:
-        # 전체: 조리중 + 완료 + 오늘 결제완룼
+        # 전체: 주문완료 + 조리중 + 완료 + 오늘 결제완료
         orders = Order.objects.filter(
-            models.Q(status__in=['cooking', 'ready']) |
+            models.Q(status__in=['ordered', 'cooking', 'ready']) |
             models.Q(status='paid', created_at__date=today)
         )
     
     orders = orders.order_by('created_at')
     
     # 카운트 계산
-    cooking_count = Order.objects.filter(status='cooking').count()
+    cooking_count = Order.objects.filter(status__in=['ordered', 'cooking']).count()
     ready_count = Order.objects.filter(status='ready').count()
     completed_count = Order.objects.filter(status='paid', created_at__date=today).count()
     
