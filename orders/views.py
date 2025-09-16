@@ -202,9 +202,9 @@ def order_detail(request, order_id):
 
 def kitchen_status_api(request):
     """주방용 실시간 상태 API"""
-    # 조리가 필요한 메뉴가 있는 주문만 조회
+    # 조리가 필요한 메뉴가 있는 주문만 조회 (새 주문 포함)
     orders = Order.objects.filter(
-        status__in=['cooking', 'ready'],
+        status__in=['ordered', 'cooking', 'ready'],
         items__menu__requires_cooking=True
     ).distinct().order_by('created_at')
     
@@ -229,19 +229,25 @@ def kitchen_status_api(request):
         })
     
     # 상태별 카운트
+    ordered_count = Order.objects.filter(
+        status='ordered',
+        items__menu__requires_cooking=True
+    ).distinct().count()
+
     cooking_count = Order.objects.filter(
         status='cooking',
         items__menu__requires_cooking=True
     ).distinct().count()
-    
+
     ready_count = Order.objects.filter(
         status='ready',
         items__menu__requires_cooking=True
     ).distinct().count()
-    
+
     return JsonResponse({
         'orders': orders_data,
+        'ordered_count': ordered_count,
         'cooking_count': cooking_count,
         'ready_count': ready_count,
-        'total_count': cooking_count + ready_count
+        'total_count': ordered_count + cooking_count + ready_count
     })

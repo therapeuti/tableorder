@@ -21,16 +21,24 @@ def table_status_api(request):
     
     for table in tables:
         group = table.get_group()
-        
-        # 결제 완료된 주문이 있는지 확인
+
+        # 미결제 주문이 있는지 확인
+        has_unpaid_orders = table.orders.filter(
+            status__in=['pending', 'ordered', 'cooking', 'ready'],
+            created_at__date=today
+        ).exists()
+
+        # 미결제 주문이 없고 오늘 결제 완료된 주문이 있으면 paid 상태
         has_paid_orders = table.orders.filter(
             status='paid',
             created_at__date=today
         ).exists()
-        
-        # 결제 완료된 주문이 있으면 paid 상태 유지
-        if has_paid_orders and table.status != 'paid':
+
+        if not has_unpaid_orders and has_paid_orders and table.status != 'paid':
             table.status = 'paid'
+            table.save()
+        elif not has_unpaid_orders and not has_paid_orders and table.status != 'empty':
+            table.status = 'empty'
             table.save()
         
         tables_data.append({
