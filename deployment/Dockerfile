@@ -19,6 +19,7 @@ COPY . .
 
 # 환경변수 설정 (프로덕션 모드)
 ENV DJANGO_SETTINGS_MODULE=restaurant_system.settings
+ENV DJANGO_ENV=production
 ENV DEBUG=False
 
 # SQLite 데이터베이스 디렉토리 생성
