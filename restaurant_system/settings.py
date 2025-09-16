@@ -10,7 +10,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-9v8mjfikrbdx)(&#58_xo
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True').lower() == 'true'
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+ALLOWED_HOSTS = ['*']  # 모든 호스트 허용 (소규모 서비스용)
 
 # Application definition
 INSTALLED_APPS = [
