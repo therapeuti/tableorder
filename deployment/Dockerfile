@@ -1,12 +1,17 @@
 # Python 3.11 이미지 사용
 FROM python:3.11-slim
 
+# 시스템 의존성 설치
+RUN apt-get update && apt-get install -y \
+    sqlite3 \
+    && rm -rf /var/lib/apt/lists/*
+
 # 작업 디렉토리 설정
 WORKDIR /app
 
 # Python 의존성 복사 및 설치
 COPY requirements.txt .
-RUN pip install --no-cache-dir Django==5.2.6 Pillow==11.3.0 qrcode[pil]==8.2 django-cors-headers==4.7.0 gunicorn django-debug-toolbar
+RUN pip install --no-cache-dir -r requirements.txt
 
 # 애플리케이션 코드 복사
 COPY . .
@@ -14,6 +19,9 @@ COPY . .
 # 환경변수 설정 (프로덕션 모드)
 ENV DJANGO_SETTINGS_MODULE=restaurant_system.settings
 ENV DEBUG=False
+
+# SQLite 데이터베이스 디렉토리 생성
+RUN mkdir -p /app/data/db /app/data/media
 
 # 정적 파일 수집 (마이그레이션은 런타임에서)
 RUN python manage.py collectstatic --noinput
@@ -29,4 +37,4 @@ EXPOSE 8000
 ENTRYPOINT ["/app/docker-entrypoint.sh"]
 
 # 애플리케이션 실행
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "2", "restaurant_system.wsgi:application"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "2", "--timeout", "60", "restaurant_system.wsgi:application"]

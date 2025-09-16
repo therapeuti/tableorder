@@ -2,15 +2,19 @@ version: '3.8'
 
 services:
   web:
-    build: 
-      context: .
-      dockerfile: deployment/Dockerfile
+    image: ${DOCKER_IMAGE:-tableorder:latest}
     ports:
       - "80:8000"
     environment:
-      - SECRET_KEY=${SECRET_KEY:-django-insecure-fallback-key}
+      - SECRET_KEY=${SECRET_KEY:-django-insecure-fallback-key-for-ec2}
       - DEBUG=${DEBUG:-False}
       - ALLOWED_HOSTS=${ALLOWED_HOSTS:-localhost,127.0.0.1}
     volumes:
-      - ./data:/app/data
+      - /home/ubuntu/tableorder/data:/app/data
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/admin/login/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s

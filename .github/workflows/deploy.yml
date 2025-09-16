@@ -1,43 +1,86 @@
-name: Auto Deploy to EC2
+name: Deploy to EC2
 
 on:
-  push:
-    branches: [ main ]
+  workflow_run:
+    workflows: ["Build and Push Docker Image"]
+    branches: [main]
+    types:
+      - completed
+  workflow_dispatch:
+
+env:
+  DOCKER_IMAGE: ${{ secrets.DOCKER_USERNAME }}/tableorder
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
+
     steps:
     - name: Deploy to EC2
-      uses: appleboy/ssh-action@v1.0.0
+      uses: appleboy/ssh-action@v1.0.3
       with:
         host: ${{ secrets.EC2_HOST }}
         username: ${{ secrets.EC2_USERNAME }}
         key: ${{ secrets.EC2_SSH_KEY }}
         port: 22
-        debug: true
         script: |
-          echo "=== 디버깅 정보 ==="
-          whoami
-          pwd
-          ls -la /home/ubuntu/
-          echo "=== 프로젝트 디렉토리로 이동 ==="
-          cd /home/ubuntu/tableorder || { echo "디렉토리 없음, 생성 중..."; mkdir -p /home/ubuntu/tableorder; cd /home/ubuntu/tableorder; }
-          echo "=== Git 작업 ==="
-          git pull origin main || echo "git pull 실패"
-          echo "=== 환경 설정 ==="
-          cp config/.env.simple .env || echo ".env 설정 실패"
-          sed -i "s/ALLOWED_HOSTS=.*/ALLOWED_HOSTS=localhost,127.0.0.1,${{ secrets.EC2_HOST }}/" .env
-          echo "=== Docker 작업 ==="
-          docker-compose down || echo "컨테이너 중단 실패"
-          docker-compose up -d --build || echo "Docker 빌드 실패"
-          echo "=== 완료 ==="
-    
+          set -e
+
+          echo "=== 배포 시작 ==="
+          cd /home/ubuntu/tableorder || {
+            echo "프로젝트 디렉토리 생성"
+            mkdir -p /home/ubuntu/tableorder
+            cd /home/ubuntu/tableorder
+          }
+
+          echo "=== Docker Compose 파일 다운로드 ==="
+          curl -o docker-compose.yml https://raw.githubusercontent.com/${{ github.repository }}/main/docker-compose.yml
+
+          echo "=== 데이터 디렉토리 준비 ==="
+          mkdir -p data/db data/media
+          chmod 755 data data/db data/media
+
+          echo "=== 환경변수 설정 ==="
+          cat > .env << EOF
+          SECRET_KEY=${{ secrets.SECRET_KEY }}
+          DEBUG=False
+          ALLOWED_HOSTS=localhost,127.0.0.1,${{ secrets.EC2_HOST }}
+          DOCKER_IMAGE=${{ env.DOCKER_IMAGE }}:latest
+          EOF
+
+          echo "=== 기존 컨테이너 정리 ==="
+          docker-compose down --remove-orphans || true
+
+          echo "=== 최신 이미지 풀 ==="
+          docker pull ${{ env.DOCKER_IMAGE }}:latest
+
+          echo "=== 애플리케이션 시작 ==="
+          docker-compose up -d
+
+          echo "=== 헬스체크 ==="
+          sleep 30
+          for i in {1..10}; do
+            if curl -f http://localhost/admin/login/ >/dev/null 2>&1; then
+              echo "애플리케이션이 정상적으로 시작됨"
+              break
+            fi
+            echo "헬스체크 시도 $i/10"
+            sleep 10
+          done
+
+          echo "=== 사용하지 않는 이미지 정리 ==="
+          docker image prune -f
+
+          echo "=== 배포 완료 ==="
+          docker-compose ps
+
     - name: Notify Success
       if: success()
-      run: echo "🎉 배포 성공!"
-    
-    - name: Notify Failure  
+      run: |
+        echo "🎉 배포 성공!"
+        echo "애플리케이션 URL: http://${{ secrets.EC2_HOST }}"
+
+    - name: Notify Failure
       if: failure()
-      run: echo "❌ 배포 실패!"
+      run: echo "❌ 배포 실패! 로그를 확인하세요."
