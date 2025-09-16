@@ -3,17 +3,75 @@
 {% block title %}주방 주문 관리 - 한가리 식당{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2><i class="fas fa-fire"></i> 주방 주문 관리</h2>
-    <div>
-        <span class="badge bg-secondary me-2">전체 {{ total_count }}</span>
-        <span class="badge bg-primary me-2">조리중 {{ cooking_count }}</span>
-        <span class="badge bg-success">완료 {{ ready_count }}</span>
-    </div>
-</div>
+<style>
+/* 고정 헤더 스타일 */
+.fixed-header {
+    position: fixed;
+    top: 56px; /* navbar 높이만큼 */
+    left: 0;
+    right: 0;
+    background: white;
+    z-index: 1000;
+    border-bottom: 2px solid #dee2e6;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
 
-<!-- 상태 필터 -->
-<div class="mb-3">
+/* 주문 내역 영역 */
+.orders-content {
+    margin-top: 180px; /* 헤더 높이만큼 여백 */
+    height: calc(100vh - 236px); /* 전체 높이에서 헤더 영역 제외 */
+    overflow-y: auto;
+}
+
+/* 새 주문 알림 */
+.new-order-alert {
+    background: linear-gradient(45deg, #28a745, #20c997);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin: 10px 0;
+    animation: pulse 2s infinite;
+    display: none;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* 모바일 대응 */
+@media (max-width: 768px) {
+    .fixed-header {
+        top: 56px;
+        padding: 10px;
+    }
+    .orders-content {
+        margin-top: 200px;
+        height: calc(100vh - 256px);
+    }
+}
+</style>
+
+<!-- 고정 헤더 영역 -->
+<div class="fixed-header">
+    <!-- 새 주문 알림 -->
+    <div id="newOrderAlert" class="new-order-alert">
+        <i class="fas fa-bell"></i> <strong>새 주문이 들어왔습니다!</strong>
+        <button type="button" class="btn btn-sm btn-light ms-2" onclick="hideNewOrderAlert()">확인</button>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2><i class="fas fa-fire"></i> 주방 주문 관리</h2>
+        <div>
+            <span class="badge bg-secondary me-2">전체 {{ total_count }}</span>
+            <span class="badge bg-primary me-2">조리중 {{ cooking_count }}</span>
+            <span class="badge bg-success">완료 {{ ready_count }}</span>
+        </div>
+    </div>
+
+    <!-- 상태 필터 -->
     <div class="btn-group" role="group">
         <a href="?status=all" class="btn {% if status_filter == 'all' %}btn-primary{% else %}btn-outline-primary{% endif %}">
             <i class="fas fa-list"></i> 전체 ({{ total_count }})
@@ -30,8 +88,11 @@
     </div>
 </div>
 
-<div class="row">
-    <div class="col-12">
+<!-- 주문 내역 영역 (스크롤 가능) -->
+<div class="orders-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
         {% for order in orders %}
         <div class="card mb-3 order-card" data-order-id="{{ order.id }}">
             <div class="card-body">
@@ -95,6 +156,8 @@
             <p class="text-muted">새로운 주문이 들어오면 여기에 표시됩니다.</p>
         </div>
         {% endfor %}
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
@@ -180,14 +243,14 @@ function updateKitchenStatus() {
             // 카운트 업데이트
             updateCounts(data.cooking_count, data.ready_count, data.total_count);
 
-            // 새 주문 감지 시 페이지 전체 새로고침
+            // 새 주문 감지 시 헤더에 알림 표시
             if (data.total_count > previousOrderCount) {
-                console.log('New orders detected, refreshing page...');
+                console.log('New orders detected, showing alert...');
                 showNewOrderAlert();
-                // 3초 후 페이지 새로고침
+                // 10초 후 페이지 새로고침 (사용자가 알림을 볼 시간 제공)
                 setTimeout(() => {
                     window.location.reload();
-                }, 3000);
+                }, 10000);
                 return; // 새로고침 예정이므로 더 이상 진행하지 않음
             }
 
@@ -225,24 +288,23 @@ function updateCounts(cooking, ready, total) {
     });
 }
 
+function hideNewOrderAlert() {
+    const alertElement = document.getElementById('newOrderAlert');
+    if (alertElement) {
+        alertElement.style.display = 'none';
+    }
+}
+
 function showNewOrderAlert() {
-    // 새 주문 알림 표시
-    const alert = document.createElement('div');
-    alert.className = 'alert alert-success alert-dismissible fade show position-fixed';
-    alert.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
-    alert.innerHTML = `
-        <i class="fas fa-bell"></i> <strong>새 주문이 들어왔습니다!</strong>
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    `;
-    
-    document.body.appendChild(alert);
-    
-    // 5초 후 자동 사라짐
-    setTimeout(() => {
-        if (alert.parentNode) {
-            alert.remove();
-        }
-    }, 5000);
+    const alertElement = document.getElementById('newOrderAlert');
+    if (alertElement) {
+        alertElement.style.display = 'block';
+
+        // 5초 후 자동 숨김
+        setTimeout(() => {
+            hideNewOrderAlert();
+        }, 5000);
+    }
 }
 </script>
 {% endblock %}
