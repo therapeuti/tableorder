@@ -30,5 +30,12 @@ urlpatterns = [
 # 미디어 파일 서빙
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-# 정적 파일 서빙 (소규모 서비스용 - Django가 직접 서빙)
+# 정적 파일 서빙 (모든 환경에서 강제 서빙)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+# Django admin 정적 파일 강제 서빙
+from django.views.static import serve
+from django.urls import re_path
+urlpatterns += [
+    re_path(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
+]

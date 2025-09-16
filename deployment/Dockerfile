@@ -43,5 +43,5 @@ EXPOSE 8000
 # 엔트리포인트 설정
 ENTRYPOINT ["/app/docker-entrypoint.sh"]
 
-# 애플리케이션 실행 (Django 개발서버 - 소규모 서비스용)
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# 애플리케이션 실행 (Gunicorn - 프로덕션용)
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "2", "restaurant_system.wsgi:application"]
