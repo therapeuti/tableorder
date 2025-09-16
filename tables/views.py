@@ -34,11 +34,21 @@ def table_status_api(request):
             created_at__date=today
         ).exists()
 
-        # 자동 상태 변경 조건을 더 엄격하게 적용
+        # 자동 상태 변경 조건을 더 정확하게 적용
         if has_unpaid_orders:
-            # 미결제 주문이 있으면 cooking 상태 (빈 테이블이 아닌 경우에만)
-            if table.status == 'empty':
-                table.status = 'cooking'
+            # 미결제 주문이 있으면 해당 주문의 상태에 따라 결정
+            latest_order = table.orders.filter(
+                status__in=['pending', 'ordered', 'cooking', 'ready'],
+                created_at__date=today
+            ).order_by('-created_at').first()
+
+            if latest_order and table.status == 'empty':
+                # 빈 테이블에서 주문이 들어오면 해당 주문 상태로 변경
+                table.status = latest_order.status
+                table.save()
+            elif latest_order and table.status in ['ordered', 'cooking', 'ready']:
+                # 이미 주문 상태인 경우, 최신 주문 상태로 업데이트 (단, paid는 제외)
+                table.status = latest_order.status
                 table.save()
         elif not has_unpaid_orders and not has_paid_orders:
             # 주문이 전혀 없으면 빈 테이블

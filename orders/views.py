@@ -158,7 +158,7 @@ def update_menu_item_status(request, item_id):
             all_ready = all(item.status == 'ready' for item in cooking_items)
             if all_ready:
                 order_item.order.status = 'ready'
-                order_item.order.table.status = 'cooking'
+                order_item.order.table.status = 'ready'  # cooking -> ready로 수정
                 order_item.order.table.save()
                 order_item.order.save()
         
