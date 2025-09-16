@@ -7,16 +7,25 @@ echo "Starting Django application..."
 echo "Collecting static files..."
 python manage.py collectstatic --noinput --clear --verbosity=2
 
-# Django admin 정적 파일 확인
-echo "Checking Django installation..."
-python -c "import django.contrib.admin; print('Django admin path:', django.contrib.admin.__file__)"
-python -c "from django.contrib.staticfiles.finders import find; print('Admin base.css:', find('admin/css/base.css'))"
-
 # 정적 파일 수집 결과 확인
 echo "Checking collected static files..."
 find /app/staticfiles -name "base.css" || echo "base.css not found"
 ls -la /app/staticfiles/admin/ || echo "Admin directory not found"
 ls -la /app/staticfiles/admin/css/ || echo "Admin CSS directory not found"
+
+# Django admin 정적 파일 수동 복사 (필요시)
+if [ ! -d "/app/staticfiles/admin" ]; then
+    echo "Manually copying Django admin static files..."
+    python -c "
+import os, shutil, django.contrib.admin
+admin_static = os.path.join(os.path.dirname(django.contrib.admin.__file__), 'static', 'admin')
+if os.path.exists(admin_static):
+    shutil.copytree(admin_static, '/app/staticfiles/admin', dirs_exist_ok=True)
+    print('Admin static files copied manually')
+else:
+    print('Admin static source not found')
+"
+fi
 
 # 데이터베이스 마이그레이션
 echo "Running database migrations..."
