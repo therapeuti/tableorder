@@ -9,7 +9,7 @@ python manage.py collectstatic --noinput --verbosity=2
 
 # 정적 파일 수집 결과 확인
 echo "Checking collected static files..."
-python manage.py check_static
+ls -la /app/staticfiles/admin/css/ || echo "Admin CSS files not found"
 
 # 데이터베이스 마이그레이션
 echo "Running database migrations..."
