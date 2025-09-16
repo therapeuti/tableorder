@@ -264,20 +264,28 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function initializeKitchenStatus() {
+    console.log('초기화 시작...');
     fetch('/orders/api/kitchen-status/')
-        .then(response => response.json())
+        .then(response => {
+            console.log('초기화 API 응답 상태:', response.status);
+            return response.json();
+        })
         .then(data => {
+            console.log('초기화 API 응답 데이터:', data);
             // 초기 주문 개수 및 주문 목록 설정
             previousOrderCount = data.total_count;
             previousOrders = data.orders || [];
             isInitialized = true;
+            console.log('초기화 완료 - 초기 주문 개수:', previousOrderCount);
             updateCounts(data.cooking_count, data.ready_count, data.total_count);
         })
         .catch(error => {
+            console.error('초기화 API 오류:', error);
             // 초기화 실패시 DOM에서 개수 계산
             previousOrderCount = document.querySelectorAll('.order-card').length;
             previousOrders = [];
             isInitialized = true;
+            console.log('DOM에서 초기화 - 주문 개수:', previousOrderCount);
         });
 }
 
@@ -296,30 +304,45 @@ function scrollToBottom() {
 function updateKitchenStatus() {
     // 초기화가 완료되지 않았으면 리턴
     if (!isInitialized) {
+        console.log('아직 초기화되지 않음');
         return;
     }
 
+    console.log('API 호출 시작...');
     const currentFilter = new URLSearchParams(window.location.search).get('status') || 'all';
 
     fetch('/orders/api/kitchen-status/')
-        .then(response => response.json())
+        .then(response => {
+            console.log('API 응답 상태:', response.status);
+            return response.json();
+        })
         .then(data => {
+            console.log('API 응답 데이터:', data);
+            console.log('이전 주문 개수:', previousOrderCount, '현재 주문 개수:', data.total_count);
+
             // 카운트 업데이트
             updateCounts(data.cooking_count, data.ready_count, data.total_count);
 
             // 새 주문 감지
             if (data.total_count > previousOrderCount) {
+                console.log('새 주문 감지됨!');
+
                 // 새로 추가된 주문 찾기
                 const newOrders = findNewOrders(previousOrders, data.orders || []);
+                console.log('새 주문 목록:', newOrders);
 
                 if (newOrders.length > 0) {
+                    console.log('새 주문 알림 표시');
                     // 새 주문 알림 표시
                     showNewOrderNotification(newOrders[0]);
 
                     // 4초 후 페이지 새로고침
                     setTimeout(() => {
+                        console.log('페이지 새로고침 실행');
                         window.location.reload();
                     }, 4000);
+                } else {
+                    console.log('새 주문이 없음');
                 }
                 return;
             }
@@ -328,9 +351,10 @@ function updateKitchenStatus() {
             previousOrderCount = data.total_count;
             previousOrders = data.orders || [];
             lastUpdateTime = Date.now();
+            console.log('상태 업데이트 완료');
         })
         .catch(error => {
-            // API 오류가 발생해도 조용히 처리
+            console.error('API 호출 오류:', error);
         });
 }
 
@@ -366,12 +390,23 @@ function findNewOrders(previousOrders, currentOrders) {
 }
 
 function showNewOrderNotification(newOrder) {
+    console.log('알림 표시 함수 호출:', newOrder);
     const notification = document.getElementById('newOrderNotification');
-    if (!notification) return;
+    if (!notification) {
+        console.error('알림 요소를 찾을 수 없음');
+        return;
+    }
+
+    console.log('알림 요소 찾음:', notification);
 
     // 알림 내용 설정
     const tableInfo = notification.querySelector('.table-info');
     const orderInfo = notification.querySelector('.order-info');
+
+    if (!tableInfo || !orderInfo) {
+        console.error('알림 내용 요소를 찾을 수 없음');
+        return;
+    }
 
     tableInfo.textContent = `테이블 ${newOrder.table_number}번 새 주문`;
 
@@ -385,13 +420,16 @@ function showNewOrderNotification(newOrder) {
     }).join(', ');
 
     orderInfo.textContent = menuItems;
+    console.log('알림 내용 설정 완료:', tableInfo.textContent, orderInfo.textContent);
 
     // 알림 표시
     notification.classList.add('show');
+    console.log('알림 표시됨');
 
     // 4초 후 알림 숨김
     setTimeout(() => {
         notification.classList.remove('show');
+        console.log('알림 숨김');
     }, 4000);
 }
 
