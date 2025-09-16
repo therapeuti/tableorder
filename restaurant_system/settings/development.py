@@ -31,15 +31,15 @@ LOGGING = {
     },
 }
 
-# Development tools
-INSTALLED_APPS += [
-    'debug_toolbar',
-]
+# Development tools (debug_toolbar 제거됨)
+# INSTALLED_APPS += [
+#     'debug_toolbar',
+# ]
 
-MIDDLEWARE = [
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
-] + MIDDLEWARE
+# MIDDLEWARE = [
+#     'debug_toolbar.middleware.DebugToolbarMiddleware',
+# ] + MIDDLEWARE
 
-INTERNAL_IPS = [
-    '127.0.0.1',
-]
+# INTERNAL_IPS = [
+#     '127.0.0.1',
+# ]

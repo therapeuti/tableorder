@@ -13,538 +13,567 @@
 {% endblock %}
 
 {% block extrastyle %}
+{{ block.super }}
+<!-- 기본 admin CSS를 CDN으로 대체 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0/css/adminlte.min.css">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 <style>
-    /* 전체 페이지 리셋 */
-    * {
-        box-sizing: border-box;
-    }
-
+    /* Django admin 기본 스타일 재정의 */
     body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background: #f8f9fa;
-        margin: 0;
-        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+        background: #f8f9fa !important;
+        margin: 0 !important;
+        padding: 0 !important;
     }
 
     /* 헤더 전체 스타일링 */
     #header {
-        background: linear-gradient(135deg, #28a745, #20c997);
-        border-bottom: none;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-        padding: 0;
+        background: linear-gradient(135deg, #28a745, #20c997) !important;
+        border-bottom: none !important;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1) !important;
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 1000 !important;
+        padding: 0 !important;
     }
 
     /* 브랜딩 섹션 */
     #branding {
-        padding: 15px 20px;
-        border-bottom: 1px solid rgba(255,255,255,0.1);
+        padding: 15px 20px !important;
+        border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+        background: transparent !important;
     }
 
     #branding h1 {
-        margin: 0;
-        padding: 0;
-        font-size: 28px;
-        font-weight: 700;
-        letter-spacing: -0.5px;
+        margin: 0 !important;
+        padding: 0 !important;
+        font-size: 28px !important;
+        font-weight: 700 !important;
+        letter-spacing: -0.5px !important;
     }
 
     #branding h1 a, #branding h1 a:link, #branding h1 a:visited {
-        color: #fff;
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        transition: all 0.3s ease;
+        color: #fff !important;
+        text-decoration: none !important;
+        display: flex !important;
+        align-items: center !important;
+        transition: all 0.3s ease !important;
     }
 
     #branding h1 a:hover {
-        color: #ffc107;
-        transform: translateY(-1px);
+        color: #ffc107 !important;
+        transform: translateY(-1px) !important;
     }
 
     #branding h1 i {
-        margin-right: 12px;
-        font-size: 24px;
-        color: #ffc107;
+        margin-right: 12px !important;
+        font-size: 24px !important;
+        color: #ffc107 !important;
     }
 
     /* 사용자 도구 */
     #user-tools {
-        padding: 10px 20px;
-        background: rgba(255,255,255,0.1);
-        backdrop-filter: blur(10px);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        color: #fff;
+        padding: 10px 20px !important;
+        background: rgba(255,255,255,0.1) !important;
+        backdrop-filter: blur(10px) !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        flex-wrap: wrap !important;
+        color: #fff !important;
+        border: none !important;
     }
 
     #user-tools a {
-        color: #fff;
-        text-decoration: none;
-        padding: 8px 15px;
-        border-radius: 20px;
-        background: rgba(255,255,255,0.1);
-        margin: 0 5px;
-        font-weight: 500;
-        transition: all 0.3s ease;
-        border: 1px solid rgba(255,255,255,0.2);
+        color: #fff !important;
+        text-decoration: none !important;
+        padding: 8px 15px !important;
+        border-radius: 20px !important;
+        background: rgba(255,255,255,0.1) !important;
+        margin: 0 5px !important;
+        font-weight: 500 !important;
+        transition: all 0.3s ease !important;
+        border: 1px solid rgba(255,255,255,0.2) !important;
     }
 
     #user-tools a:hover {
-        background: rgba(255,255,255,0.2);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        color: #fff;
+        background: rgba(255,255,255,0.2) !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2) !important;
+        color: #fff !important;
     }
 
     /* 환영 메시지 */
     #user-tools .welcome {
-        color: #fff;
-        font-weight: 600;
-        margin-right: 15px;
+        color: #fff !important;
+        font-weight: 600 !important;
+        margin-right: 15px !important;
     }
 
     /* 브레드크럼 네비게이션 */
     .breadcrumbs {
-        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-        border: none;
-        padding: 15px 20px;
-        margin: 0;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        border-bottom: 1px solid #dee2e6;
-        font-size: 14px;
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef) !important;
+        border: none !important;
+        padding: 15px 20px !important;
+        margin: 0 !important;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05) !important;
+        border-bottom: 1px solid #dee2e6 !important;
+        font-size: 14px !important;
     }
 
     .breadcrumbs a {
-        color: #007bff;
-        text-decoration: none;
-        font-weight: 500;
-        padding: 5px 10px;
-        border-radius: 15px;
-        background: rgba(0,123,255,0.1);
-        transition: all 0.3s ease;
-        margin: 0 2px;
+        color: #007bff !important;
+        text-decoration: none !important;
+        font-weight: 500 !important;
+        padding: 5px 10px !important;
+        border-radius: 15px !important;
+        background: rgba(0,123,255,0.1) !important;
+        transition: all 0.3s ease !important;
+        margin: 0 2px !important;
     }
 
     .breadcrumbs a:hover {
-        background: #007bff;
-        color: #fff;
-        transform: translateY(-1px);
+        background: #007bff !important;
+        color: #fff !important;
+        transform: translateY(-1px) !important;
     }
 
     /* 메인 콘텐츠 컨테이너 */
     #content {
-        padding: 25px;
-        max-width: 1400px;
-        margin: 0 auto;
-        min-height: calc(100vh - 140px);
+        padding: 25px !important;
+        max-width: 1400px !important;
+        margin: 0 auto !important;
+        min-height: calc(100vh - 140px) !important;
+        background: #f8f9fa !important;
     }
 
     #content-main {
-        background: transparent;
-        padding: 0;
+        background: transparent !important;
+        padding: 0 !important;
     }
 
     /* 사이드바 (필터) */
     #content-related {
-        background: transparent;
-        padding: 0;
-        margin-left: 20px;
+        background: transparent !important;
+        padding: 0 !important;
+        margin-left: 20px !important;
     }
 
     /* 메시지 */
     .messagelist {
-        margin: 20px 0;
-        padding: 0;
-        list-style: none;
+        margin: 20px 0 !important;
+        padding: 0 !important;
+        list-style: none !important;
     }
 
     .messagelist li {
-        padding: 15px 20px;
-        border-radius: 8px;
-        margin-bottom: 10px;
-        font-weight: 500;
-        display: flex;
-        align-items: center;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        padding: 15px 20px !important;
+        border-radius: 8px !important;
+        margin-bottom: 10px !important;
+        font-weight: 500 !important;
+        display: flex !important;
+        align-items: center !important;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1) !important;
     }
 
     .messagelist li:before {
-        font-family: "Font Awesome 6 Free";
-        font-weight: 900;
-        margin-right: 10px;
-        font-size: 16px;
+        font-family: "Font Awesome 6 Free" !important;
+        font-weight: 900 !important;
+        margin-right: 10px !important;
+        font-size: 16px !important;
     }
 
     .messagelist .success {
-        background: #d4edda;
-        border-left: 4px solid #28a745;
-        color: #155724;
+        background: #d4edda !important;
+        border-left: 4px solid #28a745 !important;
+        color: #155724 !important;
     }
 
     .messagelist .success:before {
-        content: "\f00c";
-        color: #28a745;
+        content: "\f00c" !important;
+        color: #28a745 !important;
     }
 
     .messagelist .error {
-        background: #f8d7da;
-        border-left: 4px solid #dc3545;
-        color: #721c24;
+        background: #f8d7da !important;
+        border-left: 4px solid #dc3545 !important;
+        color: #721c24 !important;
     }
 
     .messagelist .error:before {
-        content: "\f071";
-        color: #dc3545;
+        content: "\f071" !important;
+        color: #dc3545 !important;
     }
 
     .messagelist .warning {
-        background: #fff3cd;
-        border-left: 4px solid #ffc107;
-        color: #856404;
+        background: #fff3cd !important;
+        border-left: 4px solid #ffc107 !important;
+        color: #856404 !important;
     }
 
     .messagelist .warning:before {
-        content: "\f06a";
-        color: #ffc107;
+        content: "\f06a" !important;
+        color: #ffc107 !important;
     }
 
     .messagelist .info {
-        background: #d1ecf1;
-        border-left: 4px solid #17a2b8;
-        color: #0c5460;
+        background: #d1ecf1 !important;
+        border-left: 4px solid #17a2b8 !important;
+        color: #0c5460 !important;
     }
 
     .messagelist .info:before {
-        content: "\f05a";
-        color: #17a2b8;
+        content: "\f05a" !important;
+        color: #17a2b8 !important;
     }
 
     /* 네비게이션 개선 */
     .module {
-        border-radius: 10px;
-        border: 1px solid #e9ecef;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        margin-bottom: 25px;
-        background: #fff;
-        overflow: hidden;
+        border-radius: 10px !important;
+        border: 1px solid #e9ecef !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+        margin-bottom: 25px !important;
+        background: #fff !important;
+        overflow: hidden !important;
     }
 
     .module h2 {
-        background: linear-gradient(135deg, #007bff, #0056b3);
-        color: #fff;
-        border-radius: 0;
-        padding: 18px 25px;
-        margin: 0;
-        font-size: 18px;
-        font-weight: 600;
-        border: none;
+        background: linear-gradient(135deg, #007bff, #0056b3) !important;
+        color: #fff !important;
+        border-radius: 0 !important;
+        padding: 18px 25px !important;
+        margin: 0 !important;
+        font-size: 18px !important;
+        font-weight: 600 !important;
+        border: none !important;
     }
 
     .module table {
-        border: none;
-        width: 100%;
+        border: none !important;
+        width: 100% !important;
     }
 
     .module th, .module td {
-        padding: 15px 20px;
-        border-bottom: 1px solid #e9ecef;
+        padding: 15px 20px !important;
+        border-bottom: 1px solid #e9ecef !important;
     }
 
     .module th {
-        background: #f8f9fa;
-        font-weight: 600;
-        color: #495057;
+        background: #f8f9fa !important;
+        font-weight: 600 !important;
+        color: #495057 !important;
     }
 
     .module a {
-        color: #007bff;
-        text-decoration: none;
-        font-weight: 500;
-        transition: color 0.3s ease;
+        color: #007bff !important;
+        text-decoration: none !important;
+        font-weight: 500 !important;
+        transition: color 0.3s ease !important;
     }
 
     .module a:hover {
-        color: #0056b3;
+        color: #0056b3 !important;
     }
 
     /* 테이블 스타일 개선 */
     .results {
-        border-radius: 10px;
-        overflow: hidden;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        background: #fff;
+        border-radius: 10px !important;
+        overflow: hidden !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+        background: #fff !important;
     }
 
     .results th {
-        background: linear-gradient(135deg, #495057, #343a40);
-        color: #fff;
-        border-bottom: none;
-        font-weight: 600;
-        color: #fff;
-        padding: 15px 20px;
-        text-transform: uppercase;
-        font-size: 12px;
-        letter-spacing: 0.5px;
+        background: linear-gradient(135deg, #495057, #343a40) !important;
+        color: #fff !important;
+        border-bottom: none !important;
+        font-weight: 600 !important;
+        padding: 15px 20px !important;
+        text-transform: uppercase !important;
+        font-size: 12px !important;
+        letter-spacing: 0.5px !important;
     }
 
     .results th a {
-        color: #fff;
-        text-decoration: none;
+        color: #fff !important;
+        text-decoration: none !important;
     }
 
     .results th a:hover {
-        color: #ffc107;
+        color: #ffc107 !important;
     }
 
     .results td {
-        padding: 15px 20px;
-        border-bottom: 1px solid #e9ecef;
-        vertical-align: middle;
+        padding: 15px 20px !important;
+        border-bottom: 1px solid #e9ecef !important;
+        vertical-align: middle !important;
     }
 
     .results tr:nth-child(even) {
-        background: #f8f9fa;
+        background: #f8f9fa !important;
     }
 
     .results tr:hover {
-        background: #e3f2fd;
-        transform: scale(1.005);
-        transition: all 0.2s ease;
+        background: #e3f2fd !important;
+        transform: scale(1.005) !important;
+        transition: all 0.2s ease !important;
     }
 
     /* 버튼 개선 */
-    .default, input[type=submit], .button {
-        background: linear-gradient(135deg, #28a745, #20c997);
-        border: none;
-        border-radius: 8px;
-        color: #fff;
-        padding: 12px 25px;
-        font-weight: 600;
-        font-size: 14px;
-        cursor: pointer;
-        text-decoration: none;
-        display: inline-block;
-        transition: all 0.3s ease;
-        box-shadow: 0 2px 10px rgba(40, 167, 69, 0.3);
+    .default, input[type=submit], .button, .addlink, .changelink {
+        background: linear-gradient(135deg, #28a745, #20c997) !important;
+        border: none !important;
+        border-radius: 8px !important;
+        color: #fff !important;
+        padding: 12px 25px !important;
+        font-weight: 600 !important;
+        font-size: 14px !important;
+        cursor: pointer !important;
+        text-decoration: none !important;
+        display: inline-block !important;
+        transition: all 0.3s ease !important;
+        box-shadow: 0 2px 10px rgba(40, 167, 69, 0.3) !important;
     }
 
-    .default:hover, input[type=submit]:hover, .button:hover {
-        background: linear-gradient(135deg, #218838, #1da88a);
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
-        color: #fff;
+    .default:hover, input[type=submit]:hover, .button:hover, .addlink:hover, .changelink:hover {
+        background: linear-gradient(135deg, #218838, #1da88a) !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4) !important;
+        color: #fff !important;
+    }
+
+    .deletelink {
+        background: linear-gradient(135deg, #dc3545, #c82333) !important;
+        border: none !important;
+        border-radius: 8px !important;
+        color: #fff !important;
+        padding: 12px 25px !important;
+        font-weight: 600 !important;
+        font-size: 14px !important;
+        cursor: pointer !important;
+        text-decoration: none !important;
+        display: inline-block !important;
+        transition: all 0.3s ease !important;
+        box-shadow: 0 2px 10px rgba(220, 53, 69, 0.3) !important;
+    }
+
+    .deletelink:hover {
+        background: linear-gradient(135deg, #c82333, #a71e2a) !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4) !important;
+        color: #fff !important;
     }
 
     /* 폼 필드 개선 */
     .form-row {
-        margin-bottom: 20px;
+        margin-bottom: 20px !important;
+        background: #f8f9fa !important;
+        border-radius: 8px !important;
+        padding: 15px !important;
+        border-left: 4px solid #007bff !important;
     }
 
     .form-row label {
-        font-weight: 600;
-        color: #495057;
-        margin-bottom: 8px;
-        display: block;
-        font-size: 14px;
+        font-weight: 600 !important;
+        color: #495057 !important;
+        margin-bottom: 8px !important;
+        display: block !important;
+        font-size: 14px !important;
     }
 
     .form-row input, .form-row select, .form-row textarea {
-        border: 2px solid #e9ecef;
-        border-radius: 8px;
-        padding: 12px 15px;
-        transition: all 0.3s ease;
-        font-size: 14px;
-        width: 100%;
-        background: #fff;
+        border: 2px solid #e9ecef !important;
+        border-radius: 8px !important;
+        padding: 12px 15px !important;
+        transition: all 0.3s ease !important;
+        font-size: 14px !important;
+        width: 100% !important;
+        background: #fff !important;
     }
 
     .form-row input:focus, .form-row select:focus, .form-row textarea:focus {
-        border-color: #007bff;
-        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
-        outline: none;
+        border-color: #007bff !important;
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1) !important;
+        outline: none !important;
     }
 
     /* 인라인 폼 개선 */
     .inline-group {
-        border: 2px solid #e9ecef;
-        border-radius: 10px;
-        padding: 0;
-        margin-bottom: 25px;
-        background: #fff;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        overflow: hidden;
+        border: 2px solid #e9ecef !important;
+        border-radius: 10px !important;
+        padding: 0 !important;
+        margin-bottom: 25px !important;
+        background: #fff !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+        overflow: hidden !important;
     }
 
     .inline-group h2 {
-        background: linear-gradient(135deg, #6c757d, #495057);
-        color: #fff;
-        margin: 0;
-        padding: 15px 20px;
-        font-size: 16px;
-        font-weight: 600;
-        border: none;
+        background: linear-gradient(135deg, #6c757d, #495057) !important;
+        color: #fff !important;
+        margin: 0 !important;
+        padding: 15px 20px !important;
+        font-size: 16px !important;
+        font-weight: 600 !important;
+        border: none !important;
     }
 
     .inline-group .tabular {
-        padding: 20px;
+        padding: 20px !important;
     }
 
     /* 필터 사이드바 개선 */
     #changelist-filter {
-        background: #fff;
-        border: 2px solid #e9ecef;
-        border-radius: 10px;
-        padding: 0;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        overflow: hidden;
+        background: #fff !important;
+        border: 2px solid #e9ecef !important;
+        border-radius: 10px !important;
+        padding: 0 !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+        overflow: hidden !important;
     }
 
     #changelist-filter h2 {
-        background: linear-gradient(135deg, #6c757d, #495057);
-        color: #fff;
-        margin: 0;
-        padding: 15px 20px;
-        font-size: 16px;
-        font-weight: 600;
-        border: none;
+        background: linear-gradient(135deg, #6c757d, #495057) !important;
+        color: #fff !important;
+        margin: 0 !important;
+        padding: 15px 20px !important;
+        font-size: 16px !important;
+        font-weight: 600 !important;
+        border: none !important;
     }
 
     #changelist-filter h3 {
-        color: #495057;
-        font-size: 14px;
-        font-weight: 600;
-        margin: 20px 20px 10px 20px;
-        padding-bottom: 8px;
-        border-bottom: 2px solid #e9ecef;
+        color: #495057 !important;
+        font-size: 14px !important;
+        font-weight: 600 !important;
+        margin: 20px 20px 10px 20px !important;
+        padding-bottom: 8px !important;
+        border-bottom: 2px solid #e9ecef !important;
     }
 
     #changelist-filter ul {
-        list-style: none;
-        padding: 0 20px 20px 20px;
-        margin: 0;
+        list-style: none !important;
+        padding: 0 20px 20px 20px !important;
+        margin: 0 !important;
     }
 
     #changelist-filter li {
-        margin-bottom: 5px;
+        margin-bottom: 5px !important;
     }
 
     #changelist-filter a {
-        display: block;
-        padding: 8px 12px;
-        color: #495057;
-        text-decoration: none;
-        border-radius: 6px;
-        transition: all 0.3s ease;
-        font-size: 14px;
+        display: block !important;
+        padding: 8px 12px !important;
+        color: #495057 !important;
+        text-decoration: none !important;
+        border-radius: 6px !important;
+        transition: all 0.3s ease !important;
+        font-size: 14px !important;
     }
 
     #changelist-filter a:hover, #changelist-filter a.selected {
-        background: #007bff;
-        color: #fff;
-        transform: translateX(5px);
+        background: #007bff !important;
+        color: #fff !important;
+        transform: translateX(5px) !important;
     }
 
     /* 페이지네이션 개선 */
     .paginator {
-        background: #fff;
-        border-radius: 10px;
-        padding: 20px;
-        margin: 25px 0;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        text-align: center;
-        border: 2px solid #e9ecef;
+        background: #fff !important;
+        border-radius: 10px !important;
+        padding: 20px !important;
+        margin: 25px 0 !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+        text-align: center !important;
+        border: 2px solid #e9ecef !important;
     }
 
     .paginator a, .paginator .this-page {
-        display: inline-block;
-        padding: 10px 15px;
-        margin: 0 3px;
-        border-radius: 8px;
-        text-decoration: none;
-        color: #007bff;
-        background: #f8f9fa;
-        border: 2px solid #e9ecef;
-        font-weight: 500;
-        transition: all 0.3s ease;
+        display: inline-block !important;
+        padding: 10px 15px !important;
+        margin: 0 3px !important;
+        border-radius: 8px !important;
+        text-decoration: none !important;
+        color: #007bff !important;
+        background: #f8f9fa !important;
+        border: 2px solid #e9ecef !important;
+        font-weight: 500 !important;
+        transition: all 0.3s ease !important;
     }
 
     .paginator a:hover {
-        background: #007bff;
-        color: #fff;
-        border-color: #007bff;
-        transform: translateY(-2px);
+        background: #007bff !important;
+        color: #fff !important;
+        border-color: #007bff !important;
+        transform: translateY(-2px) !important;
     }
 
     .paginator .this-page {
-        background: #007bff;
-        color: #fff;
-        border-color: #007bff;
+        background: #007bff !important;
+        color: #fff !important;
+        border-color: #007bff !important;
     }
 
-    /* 푸터 */
-    #footer {
-        background: linear-gradient(135deg, #343a40, #495057);
-        color: #fff;
-        text-align: center;
-        padding: 25px;
-        margin-top: 50px;
-        border-top: 4px solid #28a745;
+    /* Submit row 개선 */
+    .submit-row {
+        background: #fff !important;
+        border-radius: 10px !important;
+        padding: 20px !important;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.1) !important;
+        text-align: center !important;
+        margin-top: 20px !important;
+        border: 2px solid #e9ecef !important;
     }
 
     /* 반응형 디자인 */
     @media (max-width: 768px) {
         #header {
-            position: relative;
+            position: relative !important;
         }
 
         #branding {
-            text-align: center;
-            padding: 12px 15px;
+            text-align: center !important;
+            padding: 12px 15px !important;
         }
 
         #branding h1 {
-            font-size: 20px;
+            font-size: 20px !important;
         }
 
         #user-tools {
-            padding: 8px 15px;
-            flex-direction: column;
-            gap: 10px;
+            padding: 8px 15px !important;
+            flex-direction: column !important;
+            gap: 10px !important;
         }
 
         .breadcrumbs {
-            padding: 10px 15px;
-            font-size: 12px;
+            padding: 10px 15px !important;
+            font-size: 12px !important;
         }
 
         #content {
-            padding: 15px;
+            padding: 15px !important;
         }
 
         .module h2 {
-            font-size: 16px;
-            padding: 15px 20px;
+            font-size: 16px !important;
+            padding: 15px 20px !important;
         }
 
         .results th, .results td {
-            padding: 10px 12px;
-            font-size: 13px;
+            padding: 10px 12px !important;
+            font-size: 13px !important;
         }
 
         #changelist-filter {
-            margin-top: 20px;
+            margin-top: 20px !important;
         }
     }
 </style>
 {% endblock %}
 
 {% block extrahead %}
+{{ block.super }}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 {% endblock %}
