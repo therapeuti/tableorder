@@ -22,11 +22,11 @@ ENV DJANGO_SETTINGS_MODULE=restaurant_system.settings
 ENV DJANGO_ENV=production
 ENV DEBUG=False
 
-# SQLite 데이터베이스 디렉토리 생성
-RUN mkdir -p /app/data/db /app/data/media
+# SQLite 데이터베이스 및 정적 파일 디렉토리 생성
+RUN mkdir -p /app/data/db /app/data/media /app/staticfiles
 
 # 정적 파일 수집 (마이그레이션은 런타임에서)
-RUN python manage.py collectstatic --noinput
+RUN python manage.py collectstatic --noinput --verbosity=2
 
 # 엔트리포인트 스크립트 복사 및 권한 설정
 COPY scripts/docker-entrypoint.sh /app/docker-entrypoint.sh
