@@ -9,18 +9,7 @@ python manage.py collectstatic --noinput --clear --verbosity=2
 
 # Django admin 정적 파일 강제 복사
 echo "Force copying Django admin static files..."
-python -c "
-import os, shutil, django.contrib.admin
-admin_static_source = os.path.join(os.path.dirname(django.contrib.admin.__file__), 'static', 'admin')
-admin_static_dest = '/app/staticfiles/admin'
-if os.path.exists(admin_static_source):
-    if os.path.exists(admin_static_dest):
-        shutil.rmtree(admin_static_dest)
-    shutil.copytree(admin_static_source, admin_static_dest)
-    print(f'Admin static files copied from {admin_static_source} to {admin_static_dest}')
-else:
-    print(f'Admin static source not found at {admin_static_source}')
-"
+python -c "import os, shutil, django.contrib.admin; admin_static_source = os.path.join(os.path.dirname(django.contrib.admin.__file__), 'static', 'admin'); admin_static_dest = '/app/staticfiles/admin'; shutil.rmtree(admin_static_dest) if os.path.exists(admin_static_dest) else None; shutil.copytree(admin_static_source, admin_static_dest) if os.path.exists(admin_static_source) else print('Admin static source not found'); print('Admin static files copied')"
 
 # 정적 파일 수집 결과 확인
 echo "Checking collected static files..."
