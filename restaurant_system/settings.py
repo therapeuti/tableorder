@@ -109,6 +109,16 @@ STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
 
+# Django admin 정적 파일 경로 명시적 설정
+import django.contrib.admin
+STATICFILES_DIRS += []
+if not DEBUG:
+    # 프로덕션에서 Django admin 정적 파일 경로 추가
+    import os
+    admin_static_path = os.path.join(os.path.dirname(django.contrib.admin.__file__), 'static')
+    if os.path.exists(admin_static_path) and admin_static_path not in STATICFILES_DIRS:
+        STATICFILES_DIRS.append(admin_static_path)
+
 # Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'data' / 'media'

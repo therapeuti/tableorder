@@ -25,8 +25,11 @@ ENV DEBUG=False
 # SQLite 데이터베이스 및 정적 파일 디렉토리 생성
 RUN mkdir -p /app/data/db /app/data/media /app/staticfiles
 
-# 정적 파일 수집 (마이그레이션은 런타임에서)
-RUN python manage.py collectstatic --noinput --verbosity=2
+# Django 정적 파일 확인 및 수집
+RUN python -c "import django; django.setup(); from django.contrib.staticfiles.finders import find; print('Django admin CSS:', find('admin/css/base.css'))"
+RUN python manage.py collectstatic --noinput --clear --verbosity=2 || echo "collectstatic failed"
+RUN find /app/staticfiles -name "*.css" | head -10 || echo "No CSS files found"
+RUN ls -la /app/staticfiles/admin/ || echo "Admin directory not found"
 
 # 엔트리포인트 스크립트 복사 및 권한 설정
 COPY scripts/docker-entrypoint.sh /app/docker-entrypoint.sh

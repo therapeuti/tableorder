@@ -58,7 +58,11 @@ jobs:
           echo "=== 애플리케이션 시작 ==="
           docker-compose up -d
 
-          echo "=== 헬스체크 ==="
+          echo "=== 정적 파일 수집 ==="
+          docker-compose exec -T web python manage.py collectstatic --noinput --clear || echo "정적 파일 수집 실패"
+          docker-compose exec -T web ls -la /app/staticfiles/admin/css/ || echo "Admin CSS 파일 확인 실패"
+
+          echo "=== 헬스체크 ===" 
           sleep 30
           for i in {1..10}; do
             if curl -f http://localhost/admin/login/ >/dev/null 2>&1; then

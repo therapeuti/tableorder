@@ -5,11 +5,18 @@ echo "Starting Django application..."
 
 # 정적 파일 수집
 echo "Collecting static files..."
-python manage.py collectstatic --noinput --verbosity=2
+python manage.py collectstatic --noinput --clear --verbosity=2
+
+# Django admin 정적 파일 확인
+echo "Checking Django installation..."
+python -c "import django.contrib.admin; print('Django admin path:', django.contrib.admin.__file__)"
+python -c "from django.contrib.staticfiles.finders import find; print('Admin base.css:', find('admin/css/base.css'))"
 
 # 정적 파일 수집 결과 확인
 echo "Checking collected static files..."
-ls -la /app/staticfiles/admin/css/ || echo "Admin CSS files not found"
+find /app/staticfiles -name "base.css" || echo "base.css not found"
+ls -la /app/staticfiles/admin/ || echo "Admin directory not found"
+ls -la /app/staticfiles/admin/css/ || echo "Admin CSS directory not found"
 
 # 데이터베이스 마이그레이션
 echo "Running database migrations..."
