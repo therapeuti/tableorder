@@ -69,7 +69,7 @@ def save_order(request, table_id):
         
         order = Order.objects.create(
             table=table,
-            status='pending'
+            status='ordered'
         )
         
         total_amount = 0
@@ -101,11 +101,19 @@ def save_order(request, table_id):
             return JsonResponse({'success': False, 'error': '유효한 주문 항목이 없습니다.'})
         
         order.total_amount = total_amount
+
+        # 조리가 필요한 메뉴가 있는지 확인하여 상태 결정
+        has_cooking_items = any(item.menu.requires_cooking for item in order.items.all())
+        if has_cooking_items:
+            order.status = 'cooking'
+            table.status = 'cooking'
+        else:
+            order.status = 'ready'
+            table.status = 'ready'
+
         order.save()
-        
-        table.status = 'ordered'
         table.save()
-        
+
         return JsonResponse({'success': True, 'order_id': order.id})
         
     except Exception as e:
