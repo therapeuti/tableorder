@@ -27,7 +27,20 @@ RUN mkdir -p /app/data/db /app/data/media /app/staticfiles
 
 # 정적 파일 수집
 RUN python manage.py collectstatic --noinput --clear --verbosity=2
-RUN ls -la /app/staticfiles/admin/ || echo "Admin directory not found"
+
+# Django admin 정적 파일 강제 복사
+RUN python -c "
+import os, shutil, django.contrib.admin
+admin_static_source = os.path.join(os.path.dirname(django.contrib.admin.__file__), 'static', 'admin')
+admin_static_dest = '/app/staticfiles/admin'
+if os.path.exists(admin_static_source):
+    if os.path.exists(admin_static_dest):
+        shutil.rmtree(admin_static_dest)
+    shutil.copytree(admin_static_source, admin_static_dest)
+    print('Admin static files force copied')
+"
+
+RUN ls -la /app/staticfiles/admin/css/ || echo "Admin CSS still not found"
 
 # 엔트리포인트 스크립트 복사 및 권한 설정
 COPY scripts/docker-entrypoint.sh /app/docker-entrypoint.sh
