@@ -3,6 +3,10 @@ set -e
 
 echo "Starting Django application..."
 
+# 정적 파일 수집
+echo "Collecting static files..."
+python manage.py collectstatic --noinput
+
 # 데이터베이스 마이그레이션
 echo "Running database migrations..."
 python manage.py migrate

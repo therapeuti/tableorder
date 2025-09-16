@@ -11,6 +11,7 @@ services:
       - ALLOWED_HOSTS=${ALLOWED_HOSTS:-localhost,127.0.0.1}
     volumes:
       - /home/ubuntu/tableorder/data:/app/data
+      - /home/ubuntu/tableorder/staticfiles:/app/staticfiles
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/admin/login/"]
