@@ -119,12 +119,13 @@ function getCookie(name) {
 }
 
 let tableModal;
+let lastManualChange = {}; // 테이블별 마지막 수동 변경 시간 추적
 
 document.addEventListener('DOMContentLoaded', function() {
     tableModal = new bootstrap.Modal(document.getElementById('tableModal'));
-    
-    // 실시간 업데이트 비활성화 (결제완룼 상태 유지를 위해)
-    // setInterval(updateTableStatus, 2000);
+
+    // 5초마다 실시간 업데이트 (수동 변경 고려하여 간격 늘림)
+    setInterval(updateTableStatus, 5000);
     
     // 그룹 모달 열릴 때 데이터 로드
     document.getElementById('groupModal').addEventListener('show.bs.modal', function() {
@@ -137,15 +138,20 @@ function updateTableStatus() {
         .then(response => response.json())
         .then(tables => {
             tables.forEach(table => {
+                // 수동 변경된 테이블은 건드리지 않음
+                if (lastManualChange[table.id] && Date.now() < lastManualChange[table.id]) {
+                    return;
+                }
+
                 const tableCard = document.querySelector(`.table-card[data-table-id="${table.id}"]`);
                 const statusBadge = document.querySelector(`.status-badge[data-table-id="${table.id}"]`);
-                
+
                 if (tableCard) {
                     // 기존 상태 클래스 제거
                     tableCard.className = tableCard.className.replace(/table-(empty|ordered|cooking|paid)/g, '');
                     // 새 상태 클래스 추가
                     tableCard.classList.add(`table-${table.status}`);
-                    
+
                     // 그룹 정보 업데이트
                     const existingGroupBadge = tableCard.querySelector('.badge.bg-info');
                     if (table.group_name) {
@@ -162,21 +168,21 @@ function updateTableStatus() {
                         existingGroupBadge.remove();
                     }
                 }
-                
+
                 if (statusBadge) {
                     // 상태 텍스트 및 색상 업데이트
                     const statusConfig = {
                         'empty': { text: '빈 테이블', class: 'bg-secondary' },
                         'ordered': { text: '주문 완료', class: 'bg-warning' },
-                        'cooking': { text: '조리 완룼', class: 'bg-danger' },
+                        'cooking': { text: '조리 완료', class: 'bg-danger' },
                         'paid': { text: '결제 완료', class: 'bg-info' }
                     };
-                    
+
                     const config = statusConfig[table.status] || { text: table.status, class: 'bg-primary' };
-                    
+
                     // 기존 배경 클래스 제거
                     statusBadge.className = statusBadge.className.replace(/bg-(primary|secondary|warning|danger|info|success)/g, '');
-                    
+
                     // 새 텍스트와 색상 적용
                     statusBadge.textContent = config.text;
                     statusBadge.classList.add(config.class);
@@ -542,6 +548,9 @@ function updateStatus(tableId, newStatus) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
+            // 수동 변경 시간 기록 (10초간 자동 업데이트 방지)
+            lastManualChange[tableId] = Date.now() + 10000;
+
             // 개별 테이블만 업데이트
             updateSingleTable(tableId, newStatus);
             if (typeof tableModal !== 'undefined' && tableModal._isShown) {

@@ -28,18 +28,24 @@ def table_status_api(request):
             created_at__date=today
         ).exists()
 
-        # 미결제 주문이 없고 오늘 결제 완료된 주문이 있으면 paid 상태
+        # 오늘 결제 완료된 주문이 있는지 확인
         has_paid_orders = table.orders.filter(
             status='paid',
             created_at__date=today
         ).exists()
 
-        if not has_unpaid_orders and has_paid_orders and table.status != 'paid':
-            table.status = 'paid'
-            table.save()
-        elif not has_unpaid_orders and not has_paid_orders and table.status != 'empty':
-            table.status = 'empty'
-            table.save()
+        # 자동 상태 변경 조건을 더 엄격하게 적용
+        if has_unpaid_orders:
+            # 미결제 주문이 있으면 cooking 상태 (빈 테이블이 아닌 경우에만)
+            if table.status == 'empty':
+                table.status = 'cooking'
+                table.save()
+        elif not has_unpaid_orders and not has_paid_orders:
+            # 주문이 전혀 없으면 빈 테이블
+            if table.status != 'empty':
+                table.status = 'empty'
+                table.save()
+        # paid 상태는 수동으로만 변경 가능하도록 자동 변경하지 않음
         
         tables_data.append({
             'id': table.id,
