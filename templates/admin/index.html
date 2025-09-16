@@ -1,0 +1,237 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    .dashboard-card {
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        padding: 20px;
+        margin-bottom: 20px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .dashboard-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+
+    .dashboard-card h3 {
+        color: #495057;
+        margin-bottom: 15px;
+        font-size: 18px;
+        font-weight: 600;
+    }
+
+    .dashboard-card .model-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .dashboard-card .model-list li {
+        margin-bottom: 10px;
+    }
+
+    .dashboard-card .model-list a {
+        display: flex;
+        align-items: center;
+        padding: 10px 15px;
+        background: #f8f9fa;
+        border-radius: 6px;
+        text-decoration: none;
+        color: #495057;
+        transition: all 0.3s ease;
+    }
+
+    .dashboard-card .model-list a:hover {
+        background: #e9ecef;
+        color: #007bff;
+        transform: translateX(5px);
+    }
+
+    .dashboard-card .model-list a i {
+        margin-right: 10px;
+        font-size: 16px;
+        width: 20px;
+        text-align: center;
+    }
+
+    .dashboard-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+    }
+
+    .stat-card h4 {
+        margin: 0 0 10px 0;
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    .stat-card p {
+        margin: 0;
+        opacity: 0.9;
+    }
+
+    .quick-actions {
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .quick-actions h3 {
+        color: #495057;
+        margin-bottom: 15px;
+        font-size: 18px;
+        font-weight: 600;
+    }
+
+    .action-buttons {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 15px;
+    }
+
+    .action-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 15px;
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: #fff;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .action-btn:hover {
+        background: linear-gradient(135deg, #218838, #1da88a);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(40,167,69,0.3);
+        color: #fff;
+    }
+
+    .action-btn i {
+        margin-right: 8px;
+        font-size: 16px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-stats">
+    <div class="stat-card">
+        <h4><i class="fas fa-table"></i></h4>
+        <p>테이블 관리</p>
+    </div>
+    <div class="stat-card" style="background: linear-gradient(135deg, #28a745, #20c997);">
+        <h4><i class="fas fa-utensils"></i></h4>
+        <p>메뉴 관리</p>
+    </div>
+    <div class="stat-card" style="background: linear-gradient(135deg, #dc3545, #c82333);">
+        <h4><i class="fas fa-shopping-cart"></i></h4>
+        <p>주문 관리</p>
+    </div>
+    <div class="stat-card" style="background: linear-gradient(135deg, #ffc107, #e0a800);">
+        <h4><i class="fas fa-chart-line"></i></h4>
+        <p>매출 관리</p>
+    </div>
+</div>
+
+<div class="quick-actions">
+    <h3><i class="fas fa-bolt"></i> 빠른 작업</h3>
+    <div class="action-buttons">
+        <a href="{% url 'tables:dashboard' %}" class="action-btn">
+            <i class="fas fa-eye"></i> 테이블 현황
+        </a>
+        <a href="{% url 'orders:list' %}" class="action-btn">
+            <i class="fas fa-fire"></i> 주문 관리
+        </a>
+        <a href="{% url 'menus:list' %}" class="action-btn">
+            <i class="fas fa-list"></i> 메뉴 관리
+        </a>
+        <a href="{% url 'reports:dashboard' %}" class="action-btn">
+            <i class="fas fa-chart-bar"></i> 매출 리포트
+        </a>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+    {% if app_list %}
+        {% for app in app_list %}
+            <div class="dashboard-card">
+                <h3>
+                    {% if app.app_label == 'tables' %}
+                        <i class="fas fa-table text-primary"></i>
+                    {% elif app.app_label == 'orders' %}
+                        <i class="fas fa-shopping-cart text-danger"></i>
+                    {% elif app.app_label == 'menus' %}
+                        <i class="fas fa-utensils text-success"></i>
+                    {% elif app.app_label == 'reports' %}
+                        <i class="fas fa-chart-line text-warning"></i>
+                    {% elif app.app_label == 'auth' %}
+                        <i class="fas fa-users text-info"></i>
+                    {% else %}
+                        <i class="fas fa-cog text-secondary"></i>
+                    {% endif %}
+                    {{ app.name }}
+                </h3>
+                {% if app.models %}
+                    <ul class="model-list">
+                        {% for model in app.models %}
+                            <li>
+                                {% if model.admin_url %}
+                                    <a href="{{ model.admin_url }}">
+                                        {% if model.name == 'Tables' or model.name == 'Table' %}
+                                            <i class="fas fa-table"></i>
+                                        {% elif model.name == 'Orders' or model.name == 'Order' %}
+                                            <i class="fas fa-shopping-cart"></i>
+                                        {% elif model.name == 'Order items' or model.name == 'OrderItem' %}
+                                            <i class="fas fa-list-ul"></i>
+                                        {% elif model.name == 'Menus' or model.name == 'Menu' %}
+                                            <i class="fas fa-utensils"></i>
+                                        {% elif model.name == 'Users' or model.name == 'User' %}
+                                            <i class="fas fa-user"></i>
+                                        {% elif model.name == 'Groups' or model.name == 'Group' %}
+                                            <i class="fas fa-users"></i>
+                                        {% else %}
+                                            <i class="fas fa-file"></i>
+                                        {% endif %}
+                                        {{ model.name }}
+                                    </a>
+                                {% else %}
+                                    <span>{{ model.name }}</span>
+                                {% endif %}
+
+                                {% if model.add_url %}
+                                    <a href="{{ model.add_url }}" style="margin-left: auto; padding: 5px 10px; background: #007bff; color: #fff; border-radius: 4px; font-size: 12px;">
+                                        <i class="fas fa-plus"></i> 추가
+                                    </a>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>{% trans "You don't have permission to view or edit anything." %}</p>
+    {% endif %}
+</div>
+{% endblock %}
