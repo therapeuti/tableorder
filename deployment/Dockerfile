@@ -17,10 +17,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 # 애플리케이션 코드 복사
 COPY . .
 
-# 환경변수 설정 (프로덕션 모드)
+# 환경변수 설정 (개발 모드 - 정적 파일 서빙용)
 ENV DJANGO_SETTINGS_MODULE=restaurant_system.settings
-ENV DJANGO_ENV=production
-ENV DEBUG=False
+ENV DJANGO_ENV=development
+ENV DEBUG=True
 
 # SQLite 데이터베이스 및 정적 파일 디렉토리 생성
 RUN mkdir -p /app/data/db /app/data/media /app/staticfiles
@@ -43,5 +43,5 @@ EXPOSE 8000
 # 엔트리포인트 설정
 ENTRYPOINT ["/app/docker-entrypoint.sh"]
 
-# 애플리케이션 실행 (Gunicorn - 프로덕션용)
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "2", "restaurant_system.wsgi:application"]
+# 애플리케이션 실행 (Django 개발서버 - 정적 파일 서빙 포함)
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000", "--insecure"]
