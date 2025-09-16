@@ -4,7 +4,8 @@ from .models import Order, OrderItem, Discount, PaymentMethod
 class OrderItemInline(admin.TabularInline):
     model = OrderItem
     extra = 0
-    readonly_fields = ['get_total_price']
+    readonly_fields = ['get_total_price', 'created_at']
+    fields = ['menu', 'quantity', 'unit_price', 'options', 'status', 'get_total_price']
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
@@ -20,9 +21,10 @@ class OrderAdmin(admin.ModelAdmin):
 
 @admin.register(OrderItem)
 class OrderItemAdmin(admin.ModelAdmin):
-    list_display = ['order', 'menu', 'quantity', 'unit_price', 'get_total_price']
-    list_filter = ['menu', 'created_at']
+    list_display = ['order', 'menu', 'quantity', 'unit_price', 'status', 'get_total_price', 'created_at']
+    list_filter = ['menu', 'status', 'created_at']
     readonly_fields = ['get_total_price', 'created_at']
+    fields = ['order', 'menu', 'quantity', 'unit_price', 'options', 'status', 'get_total_price', 'created_at']
 
 @admin.register(Discount)
 class DiscountAdmin(admin.ModelAdmin):
