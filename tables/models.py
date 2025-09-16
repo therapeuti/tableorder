@@ -30,9 +30,18 @@ class Table(models.Model):
     def generate_qr_code(self):
         """테이블용 QR코드 생성"""
         from django.conf import settings
-        
+        import os
+
         # QR코드에 포함될 URL (고객 주문 페이지)
-        qr_url = f"http://localhost:8000/order/{self.number}/"
+        # 환경변수에서 호스트 정보 가져오기
+        allowed_hosts = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+        # localhost가 아닌 첫 번째 호스트 사용 (EC2 IP)
+        host = next((h for h in allowed_hosts if h not in ['localhost', '127.0.0.1']), 'localhost')
+
+        if host == 'localhost':
+            qr_url = f"http://localhost:8000/order/table/{self.number}/"
+        else:
+            qr_url = f"http://{host}/order/table/{self.number}/"
         
         # QR코드 생성
         qr = qrcode.QRCode(

@@ -36,6 +36,11 @@ class Command(BaseCommand):
                 }
             )
 
+            # QR 코드가 없다면 생성
+            if not table.qr_code:
+                table.generate_qr_code()
+                table.save(update_fields=['qr_code'])
+
             if created:
                 created_count += 1
                 self.stdout.write(
