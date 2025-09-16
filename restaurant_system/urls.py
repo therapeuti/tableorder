@@ -27,6 +27,9 @@ urlpatterns = [
     path('reports/', include('reports.urls')),
 ]
 
+# 미디어 파일 서빙 (소규모 서비스용)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# DEBUG 모드에서만 정적 파일 서빙
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])
