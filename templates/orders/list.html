@@ -109,7 +109,7 @@ function toggleMenuStatus(itemId) {
     
     console.log('Current status:', currentText, 'Is cooking:', isCooking, 'New status:', newStatus);
     
-    fetch(`/orders/item/update/${itemId}/`, {
+    fetch(`item/update/${itemId}/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -172,7 +172,7 @@ function scrollToBottom() {
 function updateKitchenStatus() {
     const currentFilter = new URLSearchParams(window.location.search).get('status') || 'all';
     
-    fetch('/orders/api/kitchen-status/')
+    fetch('api/kitchen-status/')
         .then(response => response.json())
         .then(data => {
             // 카운트 업데이트
