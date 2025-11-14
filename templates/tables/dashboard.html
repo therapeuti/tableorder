@@ -14,7 +14,7 @@
         </button>
         <span class="badge bg-secondary me-2">빈 테이블</span>
         <span class="badge bg-warning me-2">주문 완료</span>
-        <span class="badge bg-danger me-2">조리 완룼</span>
+        <span class="badge bg-danger me-2">조리 완료</span>
         <span class="badge bg-info">결제 완료</span>
     </div>
 </div>
@@ -587,7 +587,7 @@ function cycleTableStatus(tableId, currentStatus) {
     
     const nextStatus = statusCycle[currentStatus] || 'empty';
     
-    // 결제완룼에서 빈 테이블로 변경 시 확인
+    // 결제완료에서 빈 테이블로 변경 시 확인
     if (currentStatus === 'paid' && nextStatus === 'empty') {
         if (!confirm('테이블을 비우시겠습니까?')) {
             return;
